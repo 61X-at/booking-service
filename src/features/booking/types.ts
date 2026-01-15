@@ -1,29 +1,37 @@
 export type Seat = {
-    id: string;
-    label: string; // "Место 1"
-    x: number; // 0..100 (%)
-    y: number; // 0..100 (%)
+  id: string;
+  label: string; // "Место 1"
+  x: number; // 0..100 (%)
+  y: number; // 0..100 (%)
 };
 
 export type SeatStatus = "free" | "busy" | "mine" | "disabled";
 
 export type Booking = {
-    id: string;
-    date: string; // YYYY-MM-DD
-    seatId: string;
-    office: string;
-    floor: string;
+  id: string;
+  userId: string;
+
+  date: string; // YYYY-MM-DD
+  seatId: string;
+
+  office: string;
+  floor: string;
 };
 
 export type BookingState = {
-    date: string; // выбранная дата
-    office: string;
-    floor: string;
-    seats: Seat[];
-    seatStatusById: Record<string, SeatStatus>;
-    selectedSeatId: string | null;
+  date: string;
+  office: string;
+  floor: string;
 
-    myBookings: Booking[];
-    status: "idle" | "loading" | "succeeded" | "failed";
-    error: string | null;
+  seats: Seat[];
+  seatStatusById: Record<string, SeatStatus>;
+  selectedSeatId: string | null;
+
+  myBookings: Booking[];
+
+  // NEW: есть ли у меня бронь на выбранную дату
+  myBookingOnDate: Booking | null;
+
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
 };

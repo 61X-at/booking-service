@@ -1,11 +1,21 @@
-export type User = {
-    id: string;
-    name: string;
-};
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
 
-export type AuthState = {
-    accessToken: string | null;
-    user: User | null;
-    status: "idle" | "loading" | "succeeded" | "failed";
-    error: string | null;
-};
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name: string;
+}

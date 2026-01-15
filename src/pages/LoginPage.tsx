@@ -1,60 +1,63 @@
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "@/app/hooks";
-import { setAccessToken, setUser } from "@/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { login } from "@/features/auth/authSlice";
+import styles from "./LoginPage.module.css";
 
-export function LoginPage() {
-    const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+export default function LoginPage() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-    const handleLogin = () => {
-        dispatch(setAccessToken("mock-token"));
-        dispatch(
-            setUser({
-                id: "1",
-                name: "Test User",
-            })
-        );
+  const { loading, error, token } = useAppSelector((s) => s.auth);
 
-        navigate("/booking");
-    };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    return (
-        <div
-            style={{
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#f6f6fb",
-            }}
-        >
-            <div
-                style={{
-                    width: 360,
-                    padding: 24,
-                    background: "#fff",
-                    borderRadius: 16,
-                    boxShadow: "0 6px 18px rgba(0,0,0,0.08)",
-                }}
-            >
-                <h2 style={{ marginBottom: 16 }}>Mock login</h2>
+  useEffect(() => {
+    if (token) navigate("/booking", { replace: true });
+  }, [token, navigate]);
 
-                <button
-                    onClick={handleLogin}
-                    style={{
-                        width: "100%",
-                        height: 44,
-                        borderRadius: 999,
-                        border: "none",
-                        background: "#9aa0ad",
-                        color: "#fff",
-                        fontWeight: 600,
-                        cursor: "pointer",
-                    }}
-                >
-                    Войти как Test User
-                </button>
-            </div>
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    dispatch(login({ email, password }));
+  };
+
+  return (
+    <div className={styles.container}>
+      <form className={styles.card} onSubmit={onSubmit}>
+        <h2 className={styles.title}>Вход</h2>
+
+        <div className={styles.field}>
+          <div className={styles.label}>Логин</div>
+          <input
+            className={styles.input}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin"
+            autoComplete="username"
+          />
         </div>
-    );
+
+        <div className={styles.field}>
+          <div className={styles.label}>Пароль</div>
+          <input
+            className={styles.input}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="admin"
+            autoComplete="current-password"
+          />
+        </div>
+
+        <button className={styles.primary} type="submit" disabled={loading}>
+          {loading ? "Загрузка..." : "Войти"}
+        </button>
+
+        {error && <div className={styles.error}>{error}</div>}
+
+        <div className={styles.hint}>Демо-доступ: admin / admin</div>
+      </form>
+    </div>
+  );
 }
